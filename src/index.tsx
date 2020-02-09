@@ -1,6 +1,9 @@
 import * as React from 'react';
 
-// Delete me
-export const Thing = () => {
-  return <div>the snozzberries taste like snozzberries</div>;
+export { default as useInViewport } from './use-in-viewport';
+export { default as useCopyClipboard } from './use-copy-clipboard';
+export { default as useBoolean } from './use-boolean';
+
+export const Hello = () => {
+	return <div>hello react hooks</div>;
 };

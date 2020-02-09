@@ -1,11 +1,10 @@
 {
+  "name": "@lokibai/react-use-hooks",
   "version": "0.1.0",
+  "description": "react hooks",
   "license": "MIT",
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
-  "files": [
-    "dist"
-  ],
+  "author": "uniquexiaobai@gmail.com",
+  "repository": "https://github.com/uniquexiaobai/react-use-hooks",
   "scripts": {
     "start": "tsdx watch",
     "build": "tsdx build",
@@ -15,6 +14,15 @@
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
   },
+  "module": "dist/react-use-hooks.esm.js",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "peerDependencies": {
     "react": ">=16"
   },
@@ -23,15 +31,6 @@
       "pre-commit": "tsdx lint"
     }
   },
-  "prettier": {
-    "printWidth": 80,
-    "semi": true,
-    "singleQuote": true,
-    "trailingComma": "es5"
-  },
-  "name": "react-use-hooks",
-  "author": "uniquexiaobai",
-  "module": "dist/react-use-hooks.esm.js",
   "devDependencies": {
     "@babel/core": "^7.8.4",
     "@storybook/addon-actions": "^5.3.12",
