@@ -4,6 +4,16 @@
 
 [![NPM](https://img.shields.io/npm/v/@lokibai/react-use-hooks.svg)](https://www.npmjs.com/package/@lokibai/react-use-hooks)
 
+- [@lokibai/react-use-hooks](#-lokibai-react-use-hooks)
+  * [Install](#install)
+  * [Usage](#usage)
+    + [useBoolean](#useboolean)
+    + [useCopyClipboard](#usecopyclipboard)
+    + [useInViewport](#useinviewport)
+    + [useMounted](#usemounted)
+    + [useDebounce/useThrottle](#usedebounce-usethrottle)
+  * [License](#license)
+
 ## Install
 
 ```bash
@@ -71,6 +81,37 @@ const App = () => {
 				marginTop: '1000px',
 			}}
 		></div>
+	);
+};
+```
+
+### useMounted
+
+```jsx
+import { useMounted } from '@lokibai/react-use-hooks';
+
+const App = () => {
+	const isMounted = useMounted();
+
+	return <div>The app is {isMounted}</div>;
+};
+```
+
+### useDebounce/useThrottle
+
+```jsx
+import { useDebounce } from '@lokibai/react-use-hooks';
+
+const App = () => {
+	const [count, setCount] = useState(0);
+	const inc = useThrottle(() => {
+		setCount(c => c + 1);
+	}, 1000);
+
+	return (
+		<div>
+			<h1 onClick={inc}>{count}</h1>
+		</div>
 	);
 };
 ```

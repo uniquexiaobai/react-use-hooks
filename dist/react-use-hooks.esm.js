@@ -1,5 +1,96 @@
 import { useState, useRef, useEffect, createElement } from 'react';
 
+var useBoolean = function useBoolean(initialValue) {
+  var _useState = useState(initialValue),
+      value = _useState[0],
+      setValue = _useState[1];
+
+  var toggle = function toggle(forceValue) {
+    if (typeof forceValue === 'boolean') {
+      setValue(forceValue);
+    } else {
+      setValue(!value);
+    }
+  };
+
+  return [value, toggle];
+};
+
+var copyPolyfill = function copyPolyfill(text) {
+  var textArea = document.createElement('textarea');
+  textArea.style.position = 'absolute';
+  textArea.style.top = '-9999px';
+  textArea.style.left = '-9999px';
+  textArea.value = text;
+  document.body.appendChild(textArea);
+  textArea.focus();
+  textArea.select();
+
+  try {
+    return document.execCommand('copy');
+  } catch (err) {
+    console.log(err);
+    return false;
+  } finally {
+    document.body.removeChild(textArea);
+  }
+};
+
+var copy = function copy(text) {
+  document.addEventListener('copy', function onCopy(e) {
+    e.clipboardData.setData('text/plain', text);
+    e.preventDefault();
+    document.removeEventListener('copy', onCopy);
+  });
+  var isCopied;
+
+  try {
+    isCopied = document.execCommand('copy');
+  } catch (err) {
+    isCopied = false;
+    console.log(err);
+  }
+
+  if (!isCopied) {
+    isCopied = copyPolyfill(text);
+  }
+
+  return isCopied;
+}; // TODO: Async Clipboard API
+// https://developers.google.com/web/updates/2018/03/clipboardapi
+
+
+var useCopyClipboard = function useCopyClipboard() {
+  var _useState = useState(false),
+      isCopied = _useState[0],
+      setCopied = _useState[1];
+
+  return [isCopied, function (text) {
+    var didCopy = copy(text);
+    setCopied(didCopy);
+  }];
+};
+
+function useDebounce(func, delay) {
+  var timerRef = useRef(null);
+
+  var debounced = function debounced() {
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    if (timerRef.current) {
+      window.clearTimeout(timerRef.current);
+    }
+
+    timerRef.current = window.setTimeout(function () {
+      func.apply(void 0, args);
+    }, delay);
+  };
+
+  return debounced;
+}
+
 var throttle = function throttle(func, wait) {
   var last, timer;
   return function () {
@@ -91,80 +182,20 @@ var useInViewport = function useInViewport(options) {
   return [inViewport, ref];
 };
 
-var copyPolyfill = function copyPolyfill(text) {
-  var textArea = document.createElement('textarea');
-  textArea.style.position = 'absolute';
-  textArea.style.top = '-9999px';
-  textArea.style.left = '-9999px';
-  textArea.value = text;
-  document.body.appendChild(textArea);
-  textArea.focus();
-  textArea.select();
-
-  try {
-    return document.execCommand('copy');
-  } catch (err) {
-    console.log(err);
-    return false;
-  } finally {
-    document.body.removeChild(textArea);
-  }
-};
-
-var copy = function copy(text) {
-  document.addEventListener('copy', function onCopy(e) {
-    e.clipboardData.setData('text/plain', text);
-    e.preventDefault();
-    document.removeEventListener('copy', onCopy);
-  });
-  var isCopied;
-
-  try {
-    isCopied = document.execCommand('copy');
-  } catch (err) {
-    isCopied = false;
-    console.log(err);
-  }
-
-  if (!isCopied) {
-    isCopied = copyPolyfill(text);
-  }
-
-  return isCopied;
-}; // TODO: Async Clipboard API
-// https://developers.google.com/web/updates/2018/03/clipboardapi
-
-
-var useCopyClipboard = function useCopyClipboard() {
+function useMounted() {
   var _useState = useState(false),
-      isCopied = _useState[0],
-      setCopied = _useState[1];
+      mounted = _useState[0],
+      setMounted = _useState[1];
 
-  return [isCopied, function (text) {
-    var didCopy = copy(text);
-    setCopied(didCopy);
-  }];
-};
-
-var useBoolean = function useBoolean(initialValue) {
-  var _useState = useState(initialValue),
-      value = _useState[0],
-      setValue = _useState[1];
-
-  var toggle = function toggle(forceValue) {
-    if (typeof forceValue === 'boolean') {
-      setValue(forceValue);
-    } else {
-      setValue(!value);
-    }
-  };
-
-  return [value, toggle];
-};
+  useEffect(function () {
+    setMounted(true);
+  }, []);
+  return mounted;
+}
 
 var Hello = function Hello() {
   return createElement("div", null, "hello react hooks");
 };
 
-export { Hello, useBoolean, useCopyClipboard, useInViewport };
+export { Hello, useBoolean, useCopyClipboard, useDebounce, useInViewport, useMounted };
 //# sourceMappingURL=react-use-hooks.esm.js.map
