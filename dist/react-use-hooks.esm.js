@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, createElement } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 var useBoolean = function useBoolean(initialValue) {
   var _useState = useState(initialValue),
@@ -89,6 +89,33 @@ function useDebounce(func, delay) {
   };
 
   return debounced;
+}
+
+function useThrottle(func, delay) {
+  var lastTimeRef = useRef(Date.now());
+  var timerRef = useRef(null);
+
+  var throttled = function throttled() {
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    if (Date.now() - lastTimeRef.current < delay) {
+      if (timerRef.current) {
+        window.clearTimeout(timerRef.current);
+      }
+
+      timerRef.current = window.setTimeout(function () {
+        func.apply(void 0, args);
+        lastTimeRef.current = Date.now();
+      }, delay);
+    } else {
+      func.apply(void 0, args);
+      lastTimeRef.current = Date.now();
+    }
+  };
+
+  return throttled;
 }
 
 var throttle = function throttle(func, wait) {
@@ -193,9 +220,5 @@ function useMounted() {
   return mounted;
 }
 
-var Hello = function Hello() {
-  return createElement("div", null, "hello react hooks");
-};
-
-export { Hello, useBoolean, useCopyClipboard, useDebounce, useInViewport, useMounted };
+export { useBoolean, useCopyClipboard, useDebounce, useInViewport, useMounted, useThrottle };
 //# sourceMappingURL=react-use-hooks.esm.js.map

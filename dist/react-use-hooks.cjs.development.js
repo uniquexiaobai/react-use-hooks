@@ -2,10 +2,10 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-var React = require('react');
+var react = require('react');
 
 var useBoolean = function useBoolean(initialValue) {
-  var _useState = React.useState(initialValue),
+  var _useState = react.useState(initialValue),
       value = _useState[0],
       setValue = _useState[1];
 
@@ -65,7 +65,7 @@ var copy = function copy(text) {
 
 
 var useCopyClipboard = function useCopyClipboard() {
-  var _useState = React.useState(false),
+  var _useState = react.useState(false),
       isCopied = _useState[0],
       setCopied = _useState[1];
 
@@ -76,7 +76,7 @@ var useCopyClipboard = function useCopyClipboard() {
 };
 
 function useDebounce(func, delay) {
-  var timerRef = React.useRef(null);
+  var timerRef = react.useRef(null);
 
   var debounced = function debounced() {
     for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
@@ -93,6 +93,33 @@ function useDebounce(func, delay) {
   };
 
   return debounced;
+}
+
+function useThrottle(func, delay) {
+  var lastTimeRef = react.useRef(Date.now());
+  var timerRef = react.useRef(null);
+
+  var throttled = function throttled() {
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    if (Date.now() - lastTimeRef.current < delay) {
+      if (timerRef.current) {
+        window.clearTimeout(timerRef.current);
+      }
+
+      timerRef.current = window.setTimeout(function () {
+        func.apply(void 0, args);
+        lastTimeRef.current = Date.now();
+      }, delay);
+    } else {
+      func.apply(void 0, args);
+      lastTimeRef.current = Date.now();
+    }
+  };
+
+  return throttled;
 }
 
 var throttle = function throttle(func, wait) {
@@ -144,18 +171,18 @@ var useInViewport = function useInViewport(options) {
     options = {};
   }
 
-  var _useState = React.useState(false),
+  var _useState = react.useState(false),
       inViewport = _useState[0],
       setInViewport = _useState[1];
 
-  var ref = React.useRef();
+  var ref = react.useRef();
   var _options = options,
       root = _options.root,
       _options$rootMargin = _options.rootMargin,
       rootMargin = _options$rootMargin === void 0 ? '0px' : _options$rootMargin,
       _options$threshold = _options.threshold,
       threshold = _options$threshold === void 0 ? [0] : _options$threshold;
-  React.useEffect(function () {
+  react.useEffect(function () {
     var unobserve = function unobserve() {};
 
     if (window.IntersectionObserver) {
@@ -187,24 +214,20 @@ var useInViewport = function useInViewport(options) {
 };
 
 function useMounted() {
-  var _useState = React.useState(false),
+  var _useState = react.useState(false),
       mounted = _useState[0],
       setMounted = _useState[1];
 
-  React.useEffect(function () {
+  react.useEffect(function () {
     setMounted(true);
   }, []);
   return mounted;
 }
 
-var Hello = function Hello() {
-  return React.createElement("div", null, "hello react hooks");
-};
-
-exports.Hello = Hello;
 exports.useBoolean = useBoolean;
 exports.useCopyClipboard = useCopyClipboard;
 exports.useDebounce = useDebounce;
 exports.useInViewport = useInViewport;
 exports.useMounted = useMounted;
+exports.useThrottle = useThrottle;
 //# sourceMappingURL=react-use-hooks.cjs.development.js.map
